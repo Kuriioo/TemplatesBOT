@@ -17,7 +17,12 @@ Fs.readdir("./Commands/", (error, f) => {
         return console.warn("Aucune commande trouvée !");
     };
 
-    
+    Commands.forEach(f => {
+        let Command = require("./Commands/" + f);
+        console.log(f + " chargé !");
+
+        Client.Commands.set(Command.help.name, Command);
+    });
 });
 
 // Events Handler
@@ -27,10 +32,16 @@ Fs.readdir("./Events/", (error, f) => {
     };
 
     let Events = f.filter(f => f.split(".").pop() === "js");
-
+    
     if (Events.length === 0) {
         return console.warn("Aucun event trouvée !");
     };
+
+    Events.forEach(f => {
+        let Event = require("./Events/" + f);
+        console.log(f + " chargé !");
+        Client.on(f.split(".")[0], Event.bind(null));
+    });
 });
 
 Client.login(Config.token);
